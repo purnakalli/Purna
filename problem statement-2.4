@@ -1,0 +1,28 @@
+import requests
+import logging
+
+# Set up logging
+logging.basicConfig(filename="app_health.log", level=logging.INFO,
+                    format="%(asctime)s - %(levelname)s - %(message)s")
+
+# Application URL
+APP_URL = "http://example.com"  # Replace with the actual application URL
+
+def check_application_health(url):
+    try:
+        response = requests.get(url, timeout=5)
+        if response.status_code == 200:
+            logging.info(f"Application is UP. Status code: {response.status_code}")
+            print("Application is UP")
+        else:
+            logging.warning(f"Application is DOWN. Status code: {response.status_code}")
+            print("Application is DOWN")
+    except requests.ConnectionError:
+        logging.error("Application is DOWN. Connection error occurred.")
+        print("Application is DOWN")
+    except requests.Timeout:
+        logging.error("Application is DOWN. Request timed out.")
+        print("Application is DOWN")
+
+if __name__ == "__main__":
+    check_application_health(APP_URL)
