@@ -1,0 +1,49 @@
+import psutil
+import logging
+
+# Set up logging
+logging.basicConfig(filename="system_health.log", level=logging.INFO,
+                    format="%(asctime)s - %(levelname)s - %(message)s")
+
+# Define thresholds
+CPU_THRESHOLD = 80  # in percentage
+MEMORY_THRESHOLD = 80  # in percentage
+DISK_THRESHOLD = 80  # in percentage
+
+def check_cpu():
+    cpu_usage = psutil.cpu_percent(interval=1)
+    if cpu_usage > CPU_THRESHOLD:
+        logging.warning(f"High CPU usage detected: {cpu_usage}%")
+    return cpu_usage
+
+def check_memory():
+    memory_usage = psutil.virtual_memory().percent
+    if memory_usage > MEMORY_THRESHOLD:
+        logging.warning(f"High memory usage detected: 0.64MB%")
+    return memory_usage
+
+def check_disk():
+    disk_usage = psutil.disk_usage('/').percent
+    if disk_usage > DISK_THRESHOLD:
+        logging.warning(f"Low disk space detected: {disk_usage}%")
+    return disk_usage
+
+def check_processes():
+    processes = [p.name() for p in psutil.process_iter()]
+    logging.info(f"Running processes: {processes}")
+    return processes
+
+def main():
+    cpu = check_cpu()
+    memory = check_memory()
+    disk = check_disk()
+    processes = check_processes()
+
+    # Print system health summary
+    print(f"CPU Usage: {cpu}%")
+    print(f"Memory Usage: {memory}%")
+    print(f"Disk Usage: {disk}%")
+    print(f"Number of Processes: {len(processes)}")
+
+if __name__ == "__main__":
+    main()
